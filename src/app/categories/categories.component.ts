@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgFor } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { ApiService } from '../api.service';
 
 @Component({
   selector: 'app-categories',
@@ -11,22 +11,20 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./categories.component.css'],
 })
 export class CategoriesComponent implements OnInit {
-  private API_URL = 'http://localhost:3000/api';
-
   categories: any;
   selectedCategory: any;
   categoryData: any = {};
 
-  constructor(private http: HttpClient) {}
+  constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.getAllCategories();
   }
 
   getAllCategories() {
-    this.http.get(`${this.API_URL}/categories`).subscribe(
-      (response) => {
-        this.categories = response;
+    this.apiService.getAllCategories().subscribe(
+      (data) => {
+        this.categories = data;
         // console.log(this.categories);
       },
       (error) => {
@@ -36,9 +34,9 @@ export class CategoriesComponent implements OnInit {
   }
 
   getCategoryById(id: string) {
-    this.http.get(`${this.API_URL}/categories/${id}`).subscribe(
-      (response) => {
-        this.selectedCategory = response;
+    this.apiService.getCategoryById(id).subscribe(
+      (data) => {
+        this.selectedCategory = data;
         console.log(this.selectedCategory);
         console.log('Category by Id Running');
       },
@@ -48,22 +46,15 @@ export class CategoriesComponent implements OnInit {
     );
   }
 
-  // onSubmitAddForm() {
-  //   this.createCategory(this.formData);
-  //   console.log('FormData', this.formData);
-  // }
-
   createCategory() {
-    this.http
-      .post(`${this.API_URL}/categories`, this.categoryData)
-      .subscribe((data) => {
-        console.log('Category created successfully:', data);
-        this.getAllCategories();
-      });
+    this.apiService.createCategory(this.categoryData).subscribe((data) => {
+      console.log('Category created successfully:', data);
+      this.getAllCategories();
+    });
   }
 
   updateCategory(id: string, categoryData: any) {
-    this.http.put(`${this.API_URL}/categories/${id}`, categoryData).subscribe(
+    this.apiService.updateCategory(id, categoryData).subscribe(
       (data) => {
         console.log('Category updated successfully:', data);
       },
@@ -73,7 +64,7 @@ export class CategoriesComponent implements OnInit {
     );
   }
   deleteCategory(id: string) {
-    this.http.delete(`${this.API_URL}/categories/${id}`).subscribe(
+    this.apiService.deleteCategory(id).subscribe(
       () => {
         console.log('Category deleted successfully');
         this.getAllCategories();

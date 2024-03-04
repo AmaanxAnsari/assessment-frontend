@@ -1,6 +1,6 @@
 import { CommonModule, NgFor } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../api.service';
 
 @Component({
   selector: 'app-products',
@@ -10,16 +10,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrl: './products.component.css',
 })
 export class ProductsComponent implements OnInit {
-  private API_URL = 'http://localhost:3000/api';
   products: any;
   selectedproducts: any;
-  constructor(private http: HttpClient) {}
+  constructor(private apiService: ApiService) {}
   ngOnInit(): void {
     this.getAllProducts();
   }
 
   getAllProducts() {
-    this.http.get(`${this.API_URL}/products`).subscribe(
+    this.apiService.getAllProducts().subscribe(
       (response) => {
         this.products = response;
         // console.log(this.products);
@@ -30,7 +29,7 @@ export class ProductsComponent implements OnInit {
     );
   }
   getProductById(id: string) {
-    this.http.get(`${this.API_URL}/products/${id}`).subscribe(
+    this.apiService.getProductById(id).subscribe(
       (response) => {
         this.selectedproducts = response;
         console.log(this.selectedproducts);
@@ -43,17 +42,15 @@ export class ProductsComponent implements OnInit {
   }
 
   createProduct(productData: any) {
-    this.http
-      .post(`${this.API_URL}/products`, productData)
-      .subscribe((data) => {
-        console.log('Category created successfully:', data);
-        this.getAllProducts();
-        console.log(this.products);
-      });
+    this.apiService.createProduct(productData).subscribe((data) => {
+      console.log('Category created successfully:', data);
+      this.getAllProducts();
+      console.log(this.products);
+    });
   }
 
   updateProduct(id: string, productData: any) {
-    this.http.put(`${this.API_URL}/products/${id}`, productData).subscribe(
+    this.apiService.updateCategory(id, productData).subscribe(
       (data) => {
         console.log('Product updated successfully:', data);
       },
@@ -63,7 +60,7 @@ export class ProductsComponent implements OnInit {
     );
   }
   deleteCategory(id: string) {
-    this.http.delete(`${this.API_URL}/products/${id}`).subscribe(
+    this.apiService.deleteProduct(id).subscribe(
       () => {
         console.log('Product deleted successfully');
         this.getAllProducts();
