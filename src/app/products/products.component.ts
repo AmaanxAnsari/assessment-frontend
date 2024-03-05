@@ -1,65 +1,124 @@
 import { CommonModule, NgFor } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ToastrModule } from 'ngx-toastr';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, NgFor],
+  imports: [CommonModule, NgFor, ReactiveFormsModule, ToastrModule],
   templateUrl: './products.component.html',
   styleUrl: './products.component.css',
 })
 export class ProductsComponent implements OnInit {
+  categories: any;
   products: any;
   selectedproducts: any;
-  constructor(private apiService: ApiService) {}
+  selectedCategory: any;
+  productData: any;
+  data: any[] = [];
+  productForm: FormGroup | any;
+  isedit: boolean = false;
+  product!: number;
+
+  constructor(private apiService: ApiService) {
+    this.data = [];
+  }
   ngOnInit(): void {
+    this.productForm = new FormGroup({
+      product_name: new FormControl(),
+      category_id: new FormControl(),
+    });
     this.getAllProducts();
+    this.getAllCategories();
   }
 
   getAllProducts() {
     this.apiService.getAllProducts().subscribe(
       (response) => {
         this.products = response;
-        // console.log(this.products);
       },
       (error) => {
         console.error(error);
       }
     );
   }
+  // getCategoryById(id: string) {
+  //   this.apiService.getCategoryById(id).subscribe(
+  //     (data) => {
+  //       this.selectedCategory = data;
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching Category by id', error);
+  //     }
+  //   );
+  // }
+
+  getAllCategories() {
+    this.apiService.getAllCategories().subscribe(
+      (data) => {
+        this.categories = data;
+      },
+      (error) => {
+        console.error('Error fetching all category', error);
+      }
+    );
+  }
+
   getProductById(id: string) {
     this.apiService.getProductById(id).subscribe(
       (response) => {
         this.selectedproducts = response;
-        console.log(this.selectedproducts);
-        console.log('product by Id Running');
       },
       (error) => {
         console.error(error);
       }
     );
   }
-
-  createProduct(productData: any) {
-    this.apiService.createProduct(productData).subscribe((data) => {
-      console.log('Category created successfully:', data);
-      this.getAllProducts();
-      console.log(this.products);
-    });
+  addProduct() {
+    this.isedit = false;
+    this.productForm.reset();
   }
-
-  updateProduct(id: string, productData: any) {
-    this.apiService.updateCategory(id, productData).subscribe(
+  createProduct(productForm: FormGroup) {
+    this.data.push(this.productForm.value);
+    this.products = this.productForm.value.name;
+    this.apiService.createProduct(this.productForm.value).subscribe(
       (data) => {
-        console.log('Product updated successfully:', data);
+        console.log('Category created successfully:', data);
+        this.getAllProducts();
+        console.log(this.products);
       },
       (error) => {
-        console.error('Error updating product:', error);
+        console.error('Error Creating Product', error);
       }
     );
   }
-  deleteCategory(id: string) {
+
+  editProduct(productData: any) {
+    this.isedit = true;
+    this.productForm.id = productData.product_id;
+    this.productForm.setValue({
+      product_name: productData.product_name,
+      category_id: productData.category_id,
+    });
+  }
+
+  updateProduct(productData: any) {
+    this.productForm.id = productData.id;
+    this.apiService
+      .updateProduct(this.productForm.id, this.productForm.value)
+      .subscribe(
+        (data) => {
+          console.log('Product updated successfully:', data);
+          this.getAllProducts();
+        },
+        (error) => {
+          console.error('Error updating product:', error);
+        }
+      );
+  }
+  deleteProduct(id: string) {
     this.apiService.deleteProduct(id).subscribe(
       () => {
         console.log('Product deleted successfully');

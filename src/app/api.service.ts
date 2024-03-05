@@ -27,7 +27,7 @@ export class ApiService {
     return this.http.put(`${this.API_URL}/categories/${id}`, body);
   }
 
-  deleteCategory(id: string): Observable<any> {
+  deleteCategory(id: number): Observable<any> {
     return this.http.delete(`${this.API_URL}/categories/${id}`);
   }
 

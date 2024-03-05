@@ -13,30 +13,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Product 1</td>
-            <td>Category 1</td>
-            <td>Category 3</td>
+          <tr *ngFor="let record of filteredRecords">
+            <th scope="row">{{ record.product_id }}</th>
+            <td>{{ record.product_name }}</td>
+            <td>
+              {{ record.category ? record.category.category_name : "N/A" }}
+            </td>
+            <td>{{ record.category_id }}</td>
           </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Product 2</td>
-            <td>Category 2</td>
-            <td>Category 3</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Product 3</td>
-            <td>Category 3</td>
-            <td>Category 3</td>
-          </tr>
-          <tr>
-            <th scope="row">4</th>
-            <td>Product 4</td>
-            <td>Category 4</td>
-            <td>Category 3</td>
-          </tr>
+          <tr></tr>
         </tbody>
       </table>
     </div>
