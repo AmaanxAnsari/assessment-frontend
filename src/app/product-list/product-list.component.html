@@ -13,17 +13,28 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let record of filteredRecords">
-            <th scope="row">{{ record.product_id }}</th>
-            <td>{{ record.product_name }}</td>
-            <td>
-              {{ record.category ? record.category.category_name : "N/A" }}
-            </td>
-            <td>{{ record.category_id }}</td>
+          <tr
+            *ngFor="
+              let data of paginatedProducts
+                | paginate
+                  : {
+                      itemsPerPage: pageSize,
+                      currentPage: currentPage,
+                      totalItems: totalProducts
+                    }
+            "
+          >
+            <th scope="row">{{ data.product_id }}</th>
+            <td>{{ data.product_name }}</td>
+            <td>{{ data.Category.category_name }}</td>
+            <td>{{ data.Category.category_id }}</td>
           </tr>
           <tr></tr>
         </tbody>
       </table>
     </div>
+    <pagination-controls
+      (pageChange)="pageChanged($event)"
+    ></pagination-controls>
   </div>
 </div>

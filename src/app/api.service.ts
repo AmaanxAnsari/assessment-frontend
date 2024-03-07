@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  private API_URL = 'http://localhost:3000/api';
+  // private API_URL = 'http://localhost:3000/api';
+  private API_URL = 'https://assessment-backend-g04j.onrender.com/api';
 
   constructor(private http: HttpClient) {}
 
@@ -34,6 +35,10 @@ export class ApiService {
   // Product APIs
   getAllProducts(): Observable<any> {
     return this.http.get(`${this.API_URL}/products`);
+  }
+
+  getPaginatedProducts(params: HttpParams): Observable<any> {
+    return this.http.get(`${this.API_URL}/paginated-products`, { params });
   }
 
   getProductById(id: string): Observable<any> {

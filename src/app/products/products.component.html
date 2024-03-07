@@ -21,6 +21,7 @@
           <th scope="col">Product ID</th>
           <th scope="col">Product Name</th>
           <th scope="col">Category ID</th>
+          <th scope="col">Category Name</th>
           <th scope="col">Actions</th>
         </tr>
       </thead>
@@ -29,7 +30,8 @@
           <th scope="row">{{ i + 1 }}</th>
           <th scope="row">{{ product.product_id }}</th>
           <td>{{ product.product_name }}</td>
-          <td>{{ product.category_id }}</td>
+          <td>{{ product.category.category_id }}</td>
+          <td>{{ product.category.category_name }}</td>
           <td>
             <button
               type="button"

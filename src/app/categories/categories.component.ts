@@ -20,7 +20,7 @@ export class CategoriesComponent implements OnInit {
   isedit: boolean = false;
   category!: number;
 
-  constructor(private apiService: ApiService, private toast: ToastrService) {
+  constructor(private apiService: ApiService, private toaster: ToastrService) {
     this.data = [];
   }
 
@@ -43,17 +43,6 @@ export class CategoriesComponent implements OnInit {
     );
   }
 
-  getCategoryById(id: string) {
-    this.apiService.getCategoryById(id).subscribe(
-      (data) => {
-        this.selectedCategory = data;
-      },
-      (error) => {
-        console.error('Error fetching Category by id', error);
-      }
-    );
-  }
-
   addCategory() {
     this.isedit = false;
     this.categoryForm.reset();
@@ -64,9 +53,14 @@ export class CategoriesComponent implements OnInit {
     this.apiService.createCategory(this.categoryForm.value).subscribe(
       (data) => {
         console.log('Category created successfully:', data);
+        this.toaster.success(
+          'Category created successfully:',
+          data.category_name
+        );
         this.getAllCategories();
       },
       (error) => {
+        this.toaster.error('Error Creating category');
         console.error('Error Creating Category', error);
       }
     );
@@ -87,9 +81,14 @@ export class CategoriesComponent implements OnInit {
       .subscribe(
         (data) => {
           console.log('Category updated successfully:', data);
+          this.toaster.success(
+            'Category Updated successfully:',
+            data.category_name
+          );
           this.getAllCategories();
         },
         (error) => {
+          this.toaster.error('Error Updating category');
           console.error('Error updating category:', error);
         }
       );
@@ -102,9 +101,12 @@ export class CategoriesComponent implements OnInit {
           (category: { category_id: number }) => category.category_id !== id
         );
         console.log('Category deleted successfully');
+        this.toaster.success('Category Deleted successfully');
         this.getAllCategories();
       },
       (error) => {
+        this.toaster.error('Error deleting category');
+
         console.error('Error deleting category:', error);
       }
     );

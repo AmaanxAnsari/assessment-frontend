@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     RouterOutlet,
     ReactiveFormsModule,
     ToastrModule,
+    NgxPaginationModule,
   ],
   providers: [HttpClient],
   templateUrl: './app.component.html',
